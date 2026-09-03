@@ -1,5 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "${workspaceFolder}/AbuseGraph_v6/src"
-    ]
-}
