@@ -1,0 +1,38 @@
+{
+  "case_id": "G-DEMO-001",
+  "case_type": "ABUSE_RING_INVESTIGATION",
+  "evidence": {
+    "cluster_risk_score": 0.82,
+    "account_count": 6,
+    "shared_devices": 2,
+    "shared_payment_instruments": 1,
+    "shared_addresses": 1,
+    "refund_rate": 0.21,
+    "chargeback_rate": 0.04,
+    "temporal_coordination": 0.68,
+    "behavior_similarity": 0.74,
+    "potential_exposure": 18400.0
+  },
+  "members": [
+    {
+      "customer_id": "C1001",
+      "risk_score": 0.81,
+      "risk_band": "HIGH"
+    },
+    {
+      "customer_id": "C1002",
+      "risk_score": 0.74,
+      "risk_band": "HIGH"
+    },
+    {
+      "customer_id": "C1003",
+      "risk_score": 0.58,
+      "risk_band": "REVIEW"
+    },
+    {
+      "customer_id": "C1004",
+      "risk_score": 0.31,
+      "risk_band": "LOW"
+    }
+  ]
+}

@@ -1,0 +1,301 @@
+{
+  "case_id": "G-C00187",
+  "case_type": "ABUSE_RING_INVESTIGATION",
+  "evidence": {
+    "cluster_risk_score": 0.824,
+    "account_count": 9,
+    "shared_devices": 18,
+    "shared_payment_instruments": 17,
+    "shared_addresses": 18,
+    "refund_rate": 0.3869,
+    "chargeback_rate": 0.1722,
+    "temporal_coordination": 0.0,
+    "behavior_similarity": 0.8049,
+    "potential_exposure": 101072.86
+  },
+  "members": [
+    {
+      "customer_id": "C05302",
+      "risk_score": 0.9072,
+      "risk_band": "HIGH"
+    },
+    {
+      "customer_id": "C05789",
+      "risk_score": 0.9072,
+      "risk_band": "HIGH"
+    },
+    {
+      "customer_id": "C02219",
+      "risk_score": 0.9005,
+      "risk_band": "HIGH"
+    },
+    {
+      "customer_id": "C02886",
+      "risk_score": 0.8939,
+      "risk_band": "HIGH"
+    },
+    {
+      "customer_id": "C09961",
+      "risk_score": 0.8872,
+      "risk_band": "HIGH"
+    },
+    {
+      "customer_id": "C00187",
+      "risk_score": 0.6605,
+      "risk_band": "REVIEW"
+    },
+    {
+      "customer_id": "C04585",
+      "risk_score": 0.5459,
+      "risk_band": "REVIEW"
+    },
+    {
+      "customer_id": "C01490",
+      "risk_score": 0.5367,
+      "risk_band": "REVIEW"
+    },
+    {
+      "customer_id": "C02379",
+      "risk_score": 0.5355,
+      "risk_band": "REVIEW"
+    }
+  ],
+  "network": {
+    "nodes": [
+      {
+        "id": "C00187",
+        "type": "customer",
+        "label": "C00187"
+      },
+      {
+        "id": "C01490",
+        "type": "customer",
+        "label": "C01490"
+      },
+      {
+        "id": "C02219",
+        "type": "customer",
+        "label": "C02219"
+      },
+      {
+        "id": "C02379",
+        "type": "customer",
+        "label": "C02379"
+      },
+      {
+        "id": "C02886",
+        "type": "customer",
+        "label": "C02886"
+      },
+      {
+        "id": "C04585",
+        "type": "customer",
+        "label": "C04585"
+      },
+      {
+        "id": "C05302",
+        "type": "customer",
+        "label": "C05302"
+      },
+      {
+        "id": "C05789",
+        "type": "customer",
+        "label": "C05789"
+      },
+      {
+        "id": "C09961",
+        "type": "customer",
+        "label": "C09961"
+      },
+      {
+        "id": "D:D01366",
+        "type": "resource",
+        "resource_type": "device",
+        "label": "D01366"
+      },
+      {
+        "id": "P:P01394",
+        "type": "resource",
+        "resource_type": "payment",
+        "label": "P01394"
+      },
+      {
+        "id": "A:A00358",
+        "type": "resource",
+        "resource_type": "address",
+        "label": "A00358"
+      },
+      {
+        "id": "P:P03474",
+        "type": "resource",
+        "resource_type": "payment",
+        "label": "P03474"
+      },
+      {
+        "id": "A:A00110",
+        "type": "resource",
+        "resource_type": "address",
+        "label": "A00110"
+      },
+      {
+        "id": "A:A00001",
+        "type": "resource",
+        "resource_type": "address",
+        "label": "A00001"
+      }
+    ],
+    "edges": [
+      {
+        "source": "C00187",
+        "target": "D:D01366",
+        "type": "device"
+      },
+      {
+        "source": "C01490",
+        "target": "D:D01366",
+        "type": "device"
+      },
+      {
+        "source": "C02219",
+        "target": "D:D01366",
+        "type": "device"
+      },
+      {
+        "source": "C02379",
+        "target": "D:D01366",
+        "type": "device"
+      },
+      {
+        "source": "C02886",
+        "target": "D:D01366",
+        "type": "device"
+      },
+      {
+        "source": "C04585",
+        "target": "D:D01366",
+        "type": "device"
+      },
+      {
+        "source": "C05302",
+        "target": "D:D01366",
+        "type": "device"
+      },
+      {
+        "source": "C05789",
+        "target": "D:D01366",
+        "type": "device"
+      },
+      {
+        "source": "C09961",
+        "target": "D:D01366",
+        "type": "device"
+      },
+      {
+        "source": "C00187",
+        "target": "P:P01394",
+        "type": "payment"
+      },
+      {
+        "source": "C02219",
+        "target": "P:P01394",
+        "type": "payment"
+      },
+      {
+        "source": "C02886",
+        "target": "P:P01394",
+        "type": "payment"
+      },
+      {
+        "source": "C05302",
+        "target": "P:P01394",
+        "type": "payment"
+      },
+      {
+        "source": "C05789",
+        "target": "P:P01394",
+        "type": "payment"
+      },
+      {
+        "source": "C09961",
+        "target": "P:P01394",
+        "type": "payment"
+      },
+      {
+        "source": "C00187",
+        "target": "A:A00358",
+        "type": "address"
+      },
+      {
+        "source": "C02219",
+        "target": "A:A00358",
+        "type": "address"
+      },
+      {
+        "source": "C02886",
+        "target": "A:A00358",
+        "type": "address"
+      },
+      {
+        "source": "C05302",
+        "target": "A:A00358",
+        "type": "address"
+      },
+      {
+        "source": "C05789",
+        "target": "A:A00358",
+        "type": "address"
+      },
+      {
+        "source": "C09961",
+        "target": "A:A00358",
+        "type": "address"
+      },
+      {
+        "source": "C01490",
+        "target": "P:P03474",
+        "type": "payment"
+      },
+      {
+        "source": "C02379",
+        "target": "P:P03474",
+        "type": "payment"
+      },
+      {
+        "source": "C04585",
+        "target": "P:P03474",
+        "type": "payment"
+      },
+      {
+        "source": "C01490",
+        "target": "A:A00110",
+        "type": "address"
+      },
+      {
+        "source": "C02379",
+        "target": "A:A00110",
+        "type": "address"
+      },
+      {
+        "source": "C04585",
+        "target": "A:A00110",
+        "type": "address"
+      },
+      {
+        "source": "C01490",
+        "target": "A:A00001",
+        "type": "address"
+      },
+      {
+        "source": "C02219",
+        "target": "A:A00001",
+        "type": "address"
+      }
+    ]
+  },
+  "evaluation_context": {
+    "period": "held_out_test",
+    "protocol": "cumulative batch investigation",
+    "resources_available_through": "2026-07-30 23:57:00",
+    "customer_labels_used_by_detector": false
+  }
+}

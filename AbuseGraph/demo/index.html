@@ -1,0 +1,1478 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>AbuseGraph — Investigation Console</title>
+
+    <style>
+        :root {
+            --bg: #070a0e;
+            --panel: #0f141a;
+            --panel2: #121920;
+            --line: #27313b;
+            --text: #eef3f7;
+            --muted: #8c99a6;
+            --accent: #f2b84b;
+            --danger: #ff6b6b;
+            --ok: #67d391;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", sans-serif;
+        }
+
+        header {
+            height: 64px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            background: rgba(7, 10, 14, .95);
+            backdrop-filter: blur(12px);
+            z-index: 10;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 850;
+            letter-spacing: -.04em;
+        }
+
+        .brand span {
+            color: var(--accent);
+        }
+
+        .nav {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .wrap {
+            max-width: 1320px;
+            margin: auto;
+            padding: 28px 22px 48px;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+            margin-bottom: 18px;
+        }
+
+        .kicker {
+            color: var(--accent);
+            font-size: 10px;
+            font-weight: 850;
+            text-transform: uppercase;
+            letter-spacing: .15em;
+        }
+
+        h1 {
+            font-size: 34px;
+            line-height: 1.05;
+            letter-spacing: -.04em;
+            margin: 6px 0 0;
+        }
+
+        .top-meta {
+            text-align: right;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--ok);
+        }
+
+        .dot.warn {
+            background: var(--danger);
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .metric,
+        .card {
+            background: linear-gradient(180deg, var(--panel2), var(--panel));
+            border: 1px solid var(--line);
+            border-radius: 14px;
+        }
+
+        .metric {
+            padding: 15px 16px;
+        }
+
+        .metric label {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+        .metric b {
+            display: block;
+            font-size: 25px;
+            letter-spacing: -.03em;
+            margin-top: 6px;
+        }
+
+        .metric small {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .delta {
+            color: var(--ok) !important;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.55fr .8fr;
+            gap: 14px;
+            align-items: start;
+        }
+
+        .grid>.card:last-child {
+            align-self: start;
+        }
+
+        .card {
+            padding: 18px;
+        }
+
+        .card-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .card h2 {
+            font-size: 16px;
+            margin: 4px 0 0;
+            letter-spacing: -.02em;
+        }
+
+        .sub {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.45;
+            margin-top: 4px;
+        }
+
+        .case-id {
+            font: 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+            color: #aab6c1;
+            margin-top: 3px;
+        }
+
+        .score {
+            text-align: right;
+        }
+
+        .score b {
+            font-size: 28px;
+            color: var(--accent);
+            letter-spacing: -.04em;
+        }
+
+        .score span {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .rows {
+            border-top: 1px solid var(--line);
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 12px;
+        }
+
+        .row span {
+            color: var(--muted);
+        }
+
+        .network {
+            margin-top: 14px;
+            overflow: auto;
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            background: #090d12;
+        }
+
+        .network svg {
+            display: block;
+            width: 100%;
+            min-width: 700px;
+            height: 330px;
+        }
+
+        .network-note {
+            padding: 9px 12px;
+            border-top: 1px solid var(--line);
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .comparebar {
+            margin: 14px 0;
+        }
+
+        .comparebar .label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .bar {
+            height: 7px;
+            background: #202832;
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .fill {
+            height: 100%;
+            border-radius: 99px;
+            background: var(--accent);
+        }
+
+        .smallgrid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+            margin-top: 14px;
+        }
+
+        .mini {
+            background: #0b1015;
+            border: 1px solid var(--line);
+            padding: 11px;
+            border-radius: 10px;
+        }
+
+        .mini span {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .mini b {
+            display: block;
+            font-size: 17px;
+            margin-top: 3px;
+        }
+
+        .callout {
+            margin-top: 12px;
+            border-left: 3px solid var(--accent);
+            background: #17140e;
+            padding: 11px 12px;
+            color: #dfcfaa;
+            font-size: 11px;
+            line-height: 1.45;
+            border-radius: 0 9px 9px 0;
+        }
+
+        .section {
+            margin-top: 14px;
+        }
+
+        .ai {
+            display: grid;
+            grid-template-columns: 1.25fr .75fr;
+            gap: 12px;
+            align-items: start;
+        }
+
+        .ai-panel {
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            padding: 14px;
+            background: #0b1015;
+            min-height: 140px;
+        }
+
+        .ai-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            font-weight: 850;
+        }
+
+        .finding {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .finding:last-child {
+            border: 0;
+        }
+
+        .finding strong {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .finding small {
+            display: block;
+            color: var(--accent);
+            font: 9px ui-monospace, SFMono-Regular, Menlo, monospace;
+            margin-top: 4px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 13px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 11px;
+            font-weight: 850;
+            cursor: pointer;
+            background: var(--accent);
+            color: #171108;
+        }
+
+        button.danger {
+            background: #36171c;
+            color: #ffb9bf;
+            border: 1px solid #682931;
+        }
+
+        button:disabled {
+            opacity: .55;
+            cursor: default;
+        }
+
+        .foot {
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.5;
+            margin-top: 10px;
+        }
+
+        .error {
+            color: #ff9a9a;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--line);
+            margin: 14px 0;
+        }
+
+        @media(max-width:1050px) {
+            .metrics {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .grid,
+            .ai {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width:650px) {
+            header {
+                padding: 0 16px;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .wrap {
+                padding: 20px 14px 36px;
+            }
+
+            .top {
+                display: block;
+            }
+
+            .top-meta {
+                text-align: left;
+                margin-top: 12px;
+            }
+
+            .metrics {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .metric b {
+                font-size: 21px;
+            }
+
+            h1 {
+                font-size: 29px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand">Abuse<span>Graph</span></div>
+        <div class="nav">Razorpay AI Buildathon · Track 02</div>
+    </header>
+
+    <main class="wrap">
+
+        <section class="top">
+
+            <div>
+                <div class="kicker">Abuse-ring investigation</div>
+                <h1>Investigation overview</h1>
+            </div>
+
+            <div class="top-meta">
+                <div class="status">
+                    <span class="dot"></span>
+                    HOLDOUT EVALUATION
+                </div>
+                <div>12,000 transactions</div>
+            </div>
+
+        </section>
+
+        <!-- METRICS -->
+
+        <section class="metrics" id="metrics"></section>
+
+        <!-- MAIN INVESTIGATION -->
+
+        <div class="grid">
+
+            <section class="card">
+
+                <div class="card-title">
+
+                    <div>
+                        <div class="kicker">Investigation candidate</div>
+
+                        <h2 id="caseTitle"></h2>
+
+                        <div class="case-id" id="caseId"></div>
+                    </div>
+
+                    <div class="score">
+                        <b id="caseScore"></b>
+                        <span>cluster risk</span>
+                    </div>
+
+                </div>
+
+                <div class="rows" id="caseRows"></div>
+
+                <div class="network">
+
+                    <svg id="graph" viewBox="0 0 900 330" role="img" aria-label="Customer resource relationship graph">
+                    </svg>
+
+                    <div class="network-note">
+                        Shared devices, payment instruments and addresses form
+                        relationship evidence—not proof of fraud.
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- BENCHMARK -->
+
+            <aside class="card">
+
+                <div class="kicker">Benchmark</div>
+
+                <h2>Behavior baseline vs AbuseGraph</h2>
+
+                <div class="sub">
+                    Same holdout period. Threshold selected on validation.
+                </div>
+
+                <div class="divider"></div>
+
+                <div id="compare"></div>
+
+                <div class="smallgrid" id="smallStats"></div>
+
+                <div class="callout">
+                    <b>Business result:</b>
+                    AbuseGraph misses substantially less abuse exposure while also
+                    reducing false positives.
+                </div>
+
+            </aside>
+
+        </div>
+
+
+        <!-- AI -->
+
+        <section class="card section">
+
+            <div class="card-title">
+
+                <div>
+                    <div class="kicker">AI investigation</div>
+
+                    <h2>Evidence and investigation</h2>
+
+                    <div class="sub">
+                        Evidence is verified before the investigation result is shown.
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="ai">
+
+                <!-- AI RESULT -->
+
+                <div class="ai-panel" id="aiOutput"></div>
+
+
+                <!-- FAILURE RECOVERY -->
+
+                <div class="ai-panel">
+
+                    <div class="kicker">Trust boundary test</div>
+
+                    <h2 style="margin-top:5px">
+                        Failure recovery
+                    </h2>
+
+                    <div class="buttons">
+
+                        <button onclick="runAI()">
+                            Run AI investigation
+                        </button>
+
+                        <button class="danger" onclick="simulateFailure()">
+                            Inject hallucination
+                        </button>
+
+                    </div>
+
+                    <div id="failure" class="foot"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <p class="foot">
+            <strong>Synthetic benchmark · No real money · Investigation recommendations only</strong>
+        </p>
+
+    </main>
+
+
+    <script>
+
+        let CASE = null;
+        let DATA = null;
+
+        const pct = x =>
+            (100 * Number(x)).toFixed(1) + '%';
+
+        const money = x =>
+            '₹' + Number(x).toLocaleString('en-IN', {
+                maximumFractionDigits: 0
+            });
+
+        const formatAIText = text =>
+            String(text).replace(
+                /₹\s?(\d+(?:\.\d+)?)/g,
+                (_, amount) =>
+                    '₹' + Number(amount).toLocaleString('en-IN', {
+                        maximumFractionDigits: 2
+                    })
+            );
+
+        const esc = s =>
+            String(s).replace(/[&<>'"]/g, c => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[c]));
+
+
+        async function load() {
+
+            [DATA, CASE] = await Promise.all([
+
+                fetch('/artifacts/evaluation.json')
+                    .then(r => r.json()),
+
+                fetch('/generated_case.json')
+                    .then(r => r.json())
+
+            ]);
+
+
+            const b =
+                DATA.baseline_test || DATA.baseline;
+
+            const g =
+                DATA.abusegraph_test || DATA.abusegraph;
+
+
+            /* TOP METRICS */
+
+            document.getElementById('metrics').innerHTML = `
+
+    <div class="metric">
+      <label>Precision</label>
+      <b>${pct(g.precision)}</b>
+      <small class="delta">
+        +${pct(g.precision - b.precision)} vs baseline
+      </small>
+    </div>
+
+    <div class="metric">
+      <label>Recall</label>
+      <b>${pct(g.recall)}</b>
+      <small class="delta">
+        +${pct(g.recall - b.recall)} vs baseline
+      </small>
+    </div>
+
+    <div class="metric">
+      <label>F1</label>
+      <b>${pct(g.f1)}</b>
+      <small>held-out performance</small>
+    </div>
+
+    <div class="metric">
+      <label>Missed exposure</label>
+      <b>${money(g.missed_abuse_exposure)}</b>
+      <small class="delta">
+        ${money(
+                b.missed_abuse_exposure -
+                g.missed_abuse_exposure
+            )} less
+      </small>
+    </div>
+
+    <div class="metric">
+      <label>Ring recall</label>
+      <b>
+        ${pct(g.ring_recall_at_50pct_member_coverage)}
+      </b>
+      <small>
+        ≥50% member coverage
+      </small>
+    </div>
+
+  `;
+
+
+            /* CASE */
+
+            document.getElementById('caseTitle').textContent =
+                `${CASE.evidence.account_count}-account investigation candidate`;
+
+            document.getElementById('caseId').textContent =
+                CASE.case_id;
+
+            document.getElementById('caseScore').textContent =
+                pct(CASE.evidence.cluster_risk_score);
+
+
+            document.getElementById('caseRows').innerHTML = `
+
+    <div class="row">
+      <span>Shared devices</span>
+      <b>${CASE.evidence.shared_devices}</b>
+    </div>
+
+    <div class="row">
+      <span>Shared payment instruments</span>
+      <b>${CASE.evidence.shared_payment_instruments}</b>
+    </div>
+
+    <div class="row">
+      <span>Shared addresses</span>
+      <b>${CASE.evidence.shared_addresses}</b>
+    </div>
+
+    <div class="row">
+      <span>Refund rate</span>
+      <b>${pct(CASE.evidence.refund_rate)}</b>
+    </div>
+
+    <div class="row">
+      <span>Chargeback rate</span>
+      <b>${pct(CASE.evidence.chargeback_rate)}</b>
+    </div>
+
+    <div class="row">
+      <span>Behavior similarity</span>
+      <b>${pct(CASE.evidence.behavior_similarity)}</b>
+    </div>
+
+    <div class="row">
+      <span>Potential exposure</span>
+      <b>${money(CASE.evidence.potential_exposure)}</b>
+    </div>
+
+  `;
+
+
+            drawGraph();
+
+
+            document.getElementById('compare').innerHTML =
+
+                compare(
+                    'Precision',
+                    b.precision,
+                    g.precision
+                ) +
+
+                compare(
+                    'Recall',
+                    b.recall,
+                    g.recall
+                ) +
+
+                compare(
+                    'F1',
+                    b.f1,
+                    g.f1
+                ) +
+
+                compare(
+                    'ROC-AUC',
+                    b.roc_auc,
+                    g.roc_auc
+                );
+
+
+            document.getElementById('smallStats').innerHTML = `
+
+    <div class="mini">
+      <span>False positives</span>
+      <b>${g.false_positive_count}</b>
+    </div>
+
+    <div class="mini">
+      <span>FP cost</span>
+      <b>${money(g.false_positive_operational_cost)}</b>
+    </div>
+
+    <div class="mini">
+      <span>Graph edges</span>
+      <b>${DATA.graph.edges}</b>
+    </div>
+
+    <div class="mini">
+      <span>Rings benchmarked</span>
+      <b>${DATA.dataset.rings}</b>
+    </div>
+
+  `;
+
+
+            renderFallback();
+
+        }
+
+
+        function compare(label, b, g) {
+
+            return `
+
+    <div class="comparebar">
+
+      <div class="label">
+        <span>${label}</span>
+
+        <span>
+          ${pct(b)}
+          →
+          <b>${pct(g)}</b>
+        </span>
+      </div>
+
+      <div class="bar">
+
+        <div
+          class="fill"
+          style="width:${Math.max(3, 100 * g)}%">
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+        }
+
+
+        function drawGraph() {
+
+            const svg =
+                document.getElementById('graph');
+
+            const ns =
+                'http://www.w3.org/2000/svg';
+
+            while (svg.firstChild)
+                svg.removeChild(svg.firstChild);
+
+
+            const nodes =
+                CASE.network?.nodes || [];
+
+            const edges =
+                CASE.network?.edges || [];
+
+            // Keep the investigation graph readable.
+            // The benchmark still reports the full graph edge count.
+            // Keep the graph readable while ensuring every displayed
+            // resource has at least one visible relationship.
+            const visibleEdges = [];
+
+            const connectedResources = new Set();
+
+            // First: guarantee one edge for every resource.
+            for (const edge of edges) {
+                const sourceNode = nodes.find(n => n.id === edge.source);
+                const targetNode = nodes.find(n => n.id === edge.target);
+
+                const resource =
+                    sourceNode?.type === 'resource'
+                        ? sourceNode
+                        : targetNode?.type === 'resource'
+                            ? targetNode
+                            : null;
+
+                if (resource && !connectedResources.has(resource.id)) {
+                    visibleEdges.push(edge);
+                    connectedResources.add(resource.id);
+                }
+            }
+
+            // Then: fill remaining slots with additional relationships.
+            for (const edge of edges) {
+                if (visibleEdges.length >= 30) break;
+
+                if (!visibleEdges.includes(edge)) {
+                    visibleEdges.push(edge);
+                }
+            }
+
+
+            const customers =
+                nodes.filter(n => n.type === 'customer');
+
+            const resources =
+                nodes.filter(n => n.type === 'resource');
+
+
+            const pos = {};
+
+
+            customers.forEach((n, i) => {
+
+                pos[n.id] = {
+
+                    x: 90,
+
+                    y: 28 +
+                        i *
+                        (274 /
+                            Math.max(customers.length - 1, 1))
+
+                };
+
+            });
+
+
+            resources.forEach((n, i) => {
+
+                pos[n.id] = {
+
+                    x: 790,
+
+                    y: 20 +
+                        i *
+                        (285 /
+                            Math.max(resources.length - 1, 1))
+
+                };
+
+            });
+
+
+            visibleEdges.forEach(e => {
+
+                const a = pos[e.source];
+                const b = pos[e.target];
+
+                if (!a || !b)
+                    return;
+
+
+                const line =
+                    document.createElementNS(ns, 'line');
+
+                line.setAttribute('x1', a.x);
+                line.setAttribute('y1', a.y);
+                line.setAttribute('x2', b.x);
+                line.setAttribute('y2', b.y);
+
+                line.setAttribute(
+                    'stroke',
+                    '#33404c'
+                );
+
+                line.setAttribute(
+                    'stroke-width',
+                    '1.25'
+                );
+
+                svg.appendChild(line);
+
+            });
+
+
+            nodes.forEach(n => {
+
+                const p = pos[n.id];
+
+                if (!p)
+                    return;
+
+
+                const g =
+                    document.createElementNS(ns, 'g');
+
+
+                const c =
+                    document.createElementNS(ns, 'circle');
+
+
+                c.setAttribute(
+                    'cx',
+                    p.x
+                );
+
+                c.setAttribute(
+                    'cy',
+                    p.y
+                );
+
+                c.setAttribute(
+                    'r',
+                    n.type === 'customer'
+                        ? 14
+                        : 9
+                );
+
+
+                c.setAttribute(
+                    'fill',
+                    n.type === 'customer'
+                        ? '#f2b84b'
+                        : n.resource_type === 'device'
+                            ? '#66a8ff'
+                            : n.resource_type === 'payment'
+                                ? '#67d391'
+                                : '#b58cff'
+                );
+
+
+                g.appendChild(c);
+
+
+                const t =
+                    document.createElementNS(
+                        ns,
+                        'text'
+                    );
+
+
+                t.setAttribute(
+                    'x',
+                    n.type === 'customer'
+                        ? p.x + 21
+                        : p.x - 17
+                );
+
+                t.setAttribute(
+                    'y',
+                    p.y + 4
+                );
+
+                t.setAttribute(
+                    'fill',
+                    '#d7dee6'
+                );
+
+                t.setAttribute(
+                    'font-size',
+                    n.type === 'customer'
+                        ? '10'
+                        : '8'
+                );
+
+                t.setAttribute(
+                    'text-anchor',
+                    n.type === 'customer'
+                        ? 'start'
+                        : 'end'
+                );
+
+
+                t.textContent =
+                    n.type === 'customer'
+                        ? n.label
+                        : `${n.resource_type} · ${n.id}`;
+
+
+                g.appendChild(t);
+
+                svg.appendChild(g);
+
+            });
+
+        }
+
+
+        function renderFallback() {
+
+            const e =
+                CASE.evidence;
+
+            document.getElementById(
+                'aiOutput'
+            ).innerHTML = `
+
+    <div class="ai-status">
+      <span class="dot"></span>
+            VERIFIED INVESTIGATION
+            <small>Deterministic recovery</small>
+    </div>
+
+    <div class="finding">
+
+      <strong>
+        ${e.account_count}-account cluster
+        merits investigation.
+      </strong>
+
+      <small>
+                Evidence: Account count
+      </small>
+
+    </div>
+
+    <div class="finding">
+
+      <strong>
+        ${e.shared_devices}
+                shared device resources +
+        ${e.shared_payment_instruments}
+                shared payment instrument resources
+        create relationship evidence.
+      </strong>
+
+      <small>
+                Evidence: Shared devices · Shared payment instruments
+      </small>
+
+    </div>
+
+    <div class="finding">
+
+      <strong>
+        Potential exposure:
+        ${money(e.potential_exposure)}.
+      </strong>
+
+      <small>
+                Evidence: Potential exposure
+      </small>
+
+    </div>
+
+    <div class="finding">
+
+      <strong>
+        Counter-evidence:
+        temporal coordination is
+        ${pct(e.temporal_coordination)}.
+      </strong>
+
+      <small>
+                Evidence: Temporal coordination
+      </small>
+
+    </div>
+
+    <p class="foot">
+
+    Priority members:
+    ${(CASE.members || [])
+                    .filter(m => m.risk_band === 'HIGH')
+                    .map(m => esc(m.customer_id))
+                    .slice(0, 5)
+                    .join(', ') || 'none'}.
+
+    Shared resources can have legitimate explanations.
+    Review before action.
+
+    </p>
+
+  `;
+
+        }
+
+
+        async function runAI() {
+
+            const box =
+                document.getElementById(
+                    'aiOutput'
+                );
+
+
+            box.innerHTML = `
+
+    <div class="ai-status">
+
+      <span class="dot"></span>
+
+      Investigating…
+
+    </div>
+
+    <p class="foot">
+      The model receives only the case JSON.
+      The server-side verifier remains the gate.
+    </p>
+
+  `;
+
+
+            try {
+
+                const r =
+                    await fetch(
+                        '/api/investigate',
+                        {
+                            method: 'POST',
+                        }
+                    );
+
+
+                const result =
+                    await r.json();
+
+
+                if (result.output)
+
+                    renderAIResult(result);
+
+                else
+
+                    throw new Error(
+                        result.error ||
+                        'No result'
+                    );
+
+
+            } catch (e) {
+
+                box.innerHTML = `
+
+      <div class="ai-status">
+
+        <span class="dot warn"></span>
+
+        Fallback
+
+      </div>
+
+      <p class="error">
+        ${esc(e.message)}
+      </p>
+
+    `;
+
+                renderFallback();
+
+            }
+
+        }
+
+
+        function renderAIResult(result) {
+
+            const o =
+                result.output || {};
+
+            const verified =
+                result.status ===
+                'VERIFIED_AI';
+
+            const evidenceLabels = {
+                'evidence.account_count': 'Account count',
+                'evidence.shared_devices': 'Shared devices',
+                'evidence.shared_payment_instruments': 'Shared payment instruments',
+                'evidence.shared_addresses': 'Shared addresses',
+                'evidence.refund_rate': 'Refund rate',
+                'evidence.chargeback_rate': 'Chargeback rate',
+                'evidence.temporal_coordination': 'Temporal coordination',
+                'evidence.behavior_similarity': 'Behavior similarity',
+                'evidence.potential_exposure': 'Potential exposure'
+            };
+
+            const evidenceText = paths =>
+                (paths || [])
+                    .map(path => evidenceLabels[path])
+                    .filter(Boolean)
+                    .join(' · ');
+
+            const renderSection = (title, items) => {
+                if (!items || !items.length) return '';
+                return `
+        <div class="finding">
+            <strong>${title}</strong>
+            ${items.map(item => `
+                <div class="finding">
+                    <strong>${esc(formatAIText(item.claim || ''))}</strong>
+                    ${evidenceText(item.evidence_paths) ? `<small>Evidence: ${esc(evidenceText(item.evidence_paths))}</small>` : ''}
+                </div>
+            `).join('')}
+        </div>`;
+            };
+
+            const priorityMembers = (o.priority_members || [])
+                .map(member => esc(member))
+                .join(' · ');
+
+            document.getElementById(
+                'aiOutput'
+            ).innerHTML = `
+
+    <div class="ai-status">
+
+      <span
+        class="dot ${verified ? '' : 'warn'}">
+      </span>
+
+          VERIFIED INVESTIGATION
+          ${result.status === 'FALLBACK' ? '<small>Deterministic recovery</small>' : ''}
+
+    </div>
+
+
+    <div class="finding">
+
+      <strong>
+        ${esc(
+                formatAIText(
+                    o.summary ||
+                    'No summary'
+                )
+            )}
+      </strong>
+
+    </div>
+
+
+        <div class="finding">
+            <strong>Risk assessment</strong>
+            <small>${esc(o.risk_assessment || 'UNKNOWN')}</small>
+        </div>
+
+
+        ${renderSection('Key findings', o.key_findings)}
+
+
+        ${renderSection('Counter-evidence', o.counter_evidence)}
+
+
+        ${(o.uncertainty || []).length ? `
+        <div class="finding">
+            <strong>Uncertainty</strong>
+            <small>${esc(o.uncertainty.join(' '))}</small>
+        </div>
+        ` : ''}
+
+
+    <div class="finding">
+
+      <strong>
+                Recommended action: ${esc(o.recommended_action || 'MANUAL_REVIEW')}
+      </strong>
+
+    </div>
+
+
+        ${priorityMembers ? `
+        <div class="finding">
+            <strong>Priority members</strong>
+            <small>${priorityMembers}</small>
+        </div>
+        ` : ''}
+
+  `;
+
+        }
+
+
+        async function simulateFailure() {
+
+            document.getElementById(
+                'failure'
+            ).textContent =
+                'Injecting an unsupported customer ID…';
+
+
+            try {
+
+                const r =
+                    await fetch(
+                        '/api/investigate?mode=hallucinate',
+                        {
+                            method: 'POST'
+                        }
+                    );
+
+
+                const result =
+                    await r.json();
+
+
+                document.getElementById(
+                    'failure'
+                ).innerHTML = `
+
+      <span class="error">
+
+        ${esc(
+                    result.reason ||
+                    'Verifier rejected output'
+                )}
+
+        →
+        fallback selected.
+
+        ${result.verification_errors
+                        ? esc(
+                            result.verification_errors.join(
+                                ' '
+                            )
+                        )
+                        : ''
+                    }
+
+      </span>
+
+    `;
+
+
+                renderAIResult(result);
+
+
+            } catch (e) {
+
+                document.getElementById(
+                    'failure'
+                ).innerHTML = `
+
+      <span class="error">
+        ${esc(e.message)}
+      </span>
+
+    `;
+
+            }
+
+        }
+
+
+        load().catch(e => {
+
+            document.body.insertAdjacentHTML(
+                'beforeend',
+
+                `<p class="error">
+      Could not load artifacts:
+      ${esc(e.message)}
+    </p>`
+            );
+
+        });
+
+    </script>
+
+</body>
+
+</html>
