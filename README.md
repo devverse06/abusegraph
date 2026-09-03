@@ -163,12 +163,12 @@ Set `GEMINI_API_KEY` and optionally `GEMINI_MODEL` in the server environment. Do
 
 ## Testing
 
-The current suite contains **23 tests**, covering detection behavior, graph and temporal edge cases, mixed cases, AI trust-boundary failures, static-file protection, health reporting, and API request validation.
+The current suite contains **25 tests**, covering detection behavior, graph and temporal edge cases, mixed cases, AI trust-boundary failures, static-file protection, health reporting, and API request validation.
 
 Current result:
 
 ```text
-23 passed
+25 passed
 ```
 
 ## Security and deployment notes
