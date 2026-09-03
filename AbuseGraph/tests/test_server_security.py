@@ -9,7 +9,7 @@ from http.server import ThreadingHTTPServer
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "demo"))
 
-from server import Handler
+from server import Handler, create_server
 
 
 def request(server, path, method="GET"):
@@ -26,6 +26,24 @@ def running_server():
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     return server, thread
+
+
+def test_server_uses_port_environment_variable_and_public_bind_host(monkeypatch):
+    monkeypatch.setenv("PORT", "9123")
+    server = create_server()
+    try:
+        assert server.server_address == ("0.0.0.0", 9123)
+    finally:
+        server.server_close()
+
+
+def test_server_defaults_to_local_development_port(monkeypatch):
+    monkeypatch.delenv("PORT", raising=False)
+    server = create_server()
+    try:
+        assert server.server_address == ("0.0.0.0", 8000)
+    finally:
+        server.server_close()
 
 
 def test_required_demo_assets_are_served():

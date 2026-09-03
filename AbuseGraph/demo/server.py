@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import sys
@@ -118,6 +119,12 @@ class Handler(SimpleHTTPRequestHandler):
             self._json(500, {"error": "internal server error"})
 
 
+def create_server():
+    port = int(os.environ.get("PORT", 8000))
+    return ThreadingHTTPServer(("0.0.0.0", port), Handler)
+
+
 if __name__ == "__main__":
-    print("AbuseGraph demo: http://127.0.0.1:8000/demo/")
-    ThreadingHTTPServer(("127.0.0.1", 8000), Handler).serve_forever()
+    port = int(os.environ.get("PORT", 8000))
+    print(f"AbuseGraph demo: http://127.0.0.1:{port}/demo/")
+    create_server().serve_forever()
