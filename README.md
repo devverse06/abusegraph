@@ -2,6 +2,9 @@
 
 **Razorpay AI Buildathon 2026 | Track 02: AI Risk Manager**
 
+**Live Demo:** https://abusegraph.onrender.com/demo/  
+**5-Minute Pitch:** https://youtu.be/y_Txkisv2-Q
+
 AbuseGraph is a defense-only abuse-ring sentinel. It surfaces coordinated customer activity that may look ordinary when each account is examined alone, using shared infrastructure and transaction/loss signals as investigation evidence.
 
 ## Problem statement
@@ -9,6 +12,7 @@ AbuseGraph is a defense-only abuse-ring sentinel. It surfaces coordinated custom
 Abuse rings can reuse devices, payment instruments, and addresses across multiple customer accounts while distributing refunds, chargebacks, and other losses across individually ordinary activity. A behavior-only customer score can miss that coordination.
 
 AbuseGraph is designed to help a risk analyst find those relationships without automatically blocking or punishing customers.
+
 
 ## Solution
 
