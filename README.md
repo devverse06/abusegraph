@@ -188,3 +188,18 @@ Current result:
 - The benchmark uses a fixed deterministic corpus and seed; it does not provide multi-seed confidence intervals.
 - The verifier constrains structure, evidence paths, allowed actions, and customer IDs, but is not a complete semantic fact-checker for every natural-language claim.
 - Production use would require richer telemetry, calibrated costs, policy controls, monitoring, governance, access control, and human review.
+
+## Future improvements
+
+Potential next steps for a production-grade AbuseGraph include:
+
+- Real-time and sliding-window detection instead of cumulative post-event batch investigation
+- Streaming device, payment-instrument, address, and transaction telemetry
+- Graph persistence and incremental updates for continuously evolving abuse networks
+- Learned graph representations for larger and more complex abuse patterns
+- Calibrated loss models using real operational investigation and recovery costs
+- Multi-seed and time-based validation with confidence intervals and drift analysis
+- Investigator feedback loops to improve thresholds and evidence ranking
+- Role-based access control, audit trails, and production monitoring
+- Stronger semantic verification of AI-generated claims against source evidence
+- Integration with existing risk and case-management workflows
